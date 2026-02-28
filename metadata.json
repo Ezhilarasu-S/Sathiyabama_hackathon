@@ -1,0 +1,5 @@
+{
+  "name": "CRACSE: Climate Risk Adaptive Crop Strategy Engine",
+  "description": "An AI-powered decision support system for predicting climate risks and recommending adaptive farming strategies in India.",
+  "requestFramePermissions": ["geolocation"]
+}

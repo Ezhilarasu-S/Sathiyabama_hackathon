@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRACSE: Climate Risk Adaptive Crop Strategy Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+      body { font-family: 'Inter', sans-serif; }
+      .content-section { animation: fadeIn 0.5s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+  </head>
+  <body class="bg-[#f5f5f5] text-[#1a1a1a] font-sans antialiased">
+    <div id="root">
+      <!-- Sidebar -->
+      <aside class="fixed left-0 top-0 h-full w-64 bg-[#151619] text-white p-6 z-50">
+        <div class="flex items-center gap-3 mb-12">
+          <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-leaf"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C10.9 14.36 12 14 15 12"/></svg>
+          </div>
+          <h1 class="text-xl font-bold tracking-tight">CRACSE</h1>
+        </div>
+
+        <nav class="space-y-2" id="main-nav">
+          <button data-section="dashboard" class="nav-btn w-full flex items-center gap-3 p-3 rounded-lg bg-white/10 text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+            <span>Dashboard</span>
+          </button>
+          <button data-section="strategy" class="nav-btn w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-white/60 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sprout"><path d="M7 20h10"/><path d="M10 20c5.5-3 5.5-13 0-16"/><path d="M14 20c-5.5-3-5.5-13 0-16"/><path d="M12 20v-4"/></svg>
+            <span>Strategy</span>
+          </button>
+          <button data-section="weather" class="nav-btn w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-white/60 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-sun"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+            <span>Weather</span>
+          </button>
+          <button data-section="mandi" class="nav-btn w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-white/60 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            <span>Mandi</span>
+          </button>
+          <button data-section="schemes" class="nav-btn w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-white/60 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scroll-text"><path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M15 8h-5"/><path d="M15 12h-5"/></svg>
+            <span>Schemes</span>
+          </button>
+          <button data-section="analytics" class="nav-btn w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-white/60 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-3"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+            <span>Analytics</span>
+          </button>
+        </nav>
+
+        <div class="absolute bottom-6 left-6 right-6">
+          <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+            <p class="text-xs text-white/40 uppercase tracking-widest font-semibold mb-2">System Status</p>
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span class="text-sm font-medium">Python AI Active</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="ml-64 p-8 min-h-screen">
+        <!-- Section: Dashboard -->
+        <section id="section-dashboard" class="content-section">
+          <header class="flex justify-between items-center mb-8">
+            <div>
+              <h2 class="text-3xl font-bold tracking-tight mb-1">Dashboard</h2>
+              <p class="text-black/40 text-sm">Overview of your farm's health and climate risks.</p>
+            </div>
+            <button id="get-location" class="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-xl shadow-lg shadow-emerald-500/20 font-medium text-sm hover:bg-emerald-600 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              Sync GPS Weather
+            </button>
+          </header>
+
+          <!-- Soil Nutrient Profile -->
+          <div class="bg-white p-8 rounded-3xl shadow-sm border border-black/5 mb-8">
+            <h4 class="text-lg font-bold tracking-tight mb-6 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-test-tube-2 text-emerald-500"><path d="M21 7 7 21"/><path d="M10 11 8 9"/><path d="m12 13-2-2"/><path d="m14 15-2-2"/><path d="m16 17-2-2"/><path d="m14.5 2.5-4.5 4.5c-1.5 1.5-1.5 3.5 0 5l11 11c1.5 1.5 3.5 1.5 5 0l4.5-4.5c1.5-1.5 1.5-3.5 0-5L21 7"/><path d="M8.5 8.5 4 13c-1.5 1.5-1.5 3.5 0 5l2 2"/></svg>
+              Soil Nutrient Profile
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium">Nitrogen (N)</span>
+                  <span class="text-sm font-bold text-emerald-600">90 mg/kg</span>
+                </div>
+                <div class="w-full bg-black/5 h-2 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-full w-[75%]"></div>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium">Phosphorus (P)</span>
+                  <span class="text-sm font-bold text-blue-600">42 mg/kg</span>
+                </div>
+                <div class="w-full bg-black/5 h-2 rounded-full overflow-hidden">
+                  <div class="bg-blue-500 h-full w-[45%]"></div>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm font-medium">Potassium (K)</span>
+                  <span class="text-sm font-bold text-orange-600">43 mg/kg</span>
+                </div>
+                <div class="w-full bg-black/5 h-2 rounded-full overflow-hidden">
+                  <div class="bg-orange-500 h-full w-[50%]"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-black/5">
+              <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-orange-50 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thermometer text-orange-500"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+                </div>
+                <span class="text-xs font-mono text-orange-500 font-bold">+2.4°C</span>
+              </div>
+              <p class="text-sm text-black/40 font-medium mb-1">Current Temp</p>
+              <h3 class="text-2xl font-bold tracking-tight">38.5°C</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-black/5">
+              <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-blue-50 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-droplets text-blue-500"><path d="M7 16.3c2.2 0 4-1.8 4-4 0-3.3-4.5-8.8-4.5-8.8S2 9 2 12.3c0 2.2 1.8 4 4 4Z"/><path d="M18 15.7c1.1 0 2.1-.4 2.8-1.2.7-.8 1.2-1.8 1.2-2.8 0-2.4-3.3-6.5-3.3-6.5S15.4 9.3 15.4 11.7c0 1.1.4 2.1 1.2 2.8.7.8 1.7 1.2 2.8 1.2Z"/></svg>
+                </div>
+                <span class="text-xs font-mono text-blue-500 font-bold">45%</span>
+              </div>
+              <p class="text-sm text-black/40 font-medium mb-1">Soil Moisture</p>
+              <h3 class="text-2xl font-bold tracking-tight">Moderate</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-black/5">
+              <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-red-50 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle text-red-500"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                </div>
+                <span class="text-xs font-mono text-red-500 font-bold">HIGH</span>
+              </div>
+              <p class="text-sm text-black/40 font-medium mb-1">Risk Level</p>
+              <h3 id="risk-display" class="text-2xl font-bold tracking-tight">Heatwave</h3>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-black/5">
+              <div class="flex justify-between items-start mb-4">
+                <div class="p-2 bg-emerald-50 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit text-emerald-500"><path d="M12 4.5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h.5"/><path d="M18 8h.5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H18"/><path d="M12 21.5V22a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5"/><path d="M6 16h-.5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2H6"/><circle cx="12" cy="12" r="2"/><path d="M12 10V8"/><path d="M14 12h2"/><path d="M12 14v2"/><path d="M10 12H8"/></svg>
+                </div>
+                <span class="text-xs font-mono text-emerald-500 font-bold">85%</span>
+              </div>
+              <p class="text-sm text-black/40 font-medium mb-1">AI Confidence</p>
+              <h3 class="text-2xl font-bold tracking-tight">Optimal</h3>
+            </div>
+          </div>
+
+          <!-- Risk Prevention Suggestions -->
+          <div class="bg-white p-8 rounded-3xl shadow-sm border border-black/5 mb-8">
+            <h4 class="text-lg font-bold tracking-tight mb-6 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check text-emerald-500"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+              Risk Prevention Suggestions
+            </h4>
+            <div id="risk-prevention-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                <p class="text-sm font-bold text-orange-900 mb-1">Heatwave Prevention</p>
+                <p class="text-xs text-orange-700">Apply light irrigation during early morning hours and use straw mulching to keep soil cool.</p>
+              </div>
+              <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                <p class="text-sm font-bold text-blue-900 mb-1">Flood Mitigation</p>
+                <p class="text-xs text-blue-700">Ensure proper drainage channels are clear and consider raised bed planting for sensitive crops.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Strategy -->
+        <section id="section-strategy" class="content-section hidden">
+          <header class="mb-8">
+            <h2 class="text-3xl font-bold tracking-tight mb-1">Crop Strategy</h2>
+            <p class="text-black/40 text-sm">ML-driven recommendations for optimal yield.</p>
+          </header>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-black/5">
+              <h4 class="text-lg font-bold tracking-tight mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sprout text-emerald-500"><path d="M7 20h10"/><path d="M10 20c5.5-3 5.5-13 0-16"/><path d="M14 20c-5.5-3-5.5-13 0-16"/><path d="M12 20v-4"/></svg>
+                ML Crop Recommendation
+              </h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div>
+                  <label class="block text-[10px] uppercase tracking-widest text-black/40 font-bold mb-1">Nitrogen (N)</label>
+                  <input type="number" id="input-n" value="90" class="w-full bg-black/5 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                  <label class="block text-[10px] uppercase tracking-widest text-black/40 font-bold mb-1">Phosphorus (P)</label>
+                  <input type="number" id="input-p" value="42" class="w-full bg-black/5 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                  <label class="block text-[10px] uppercase tracking-widest text-black/40 font-bold mb-1">Potassium (K)</label>
+                  <input type="number" id="input-k" value="43" class="w-full bg-black/5 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                  <label class="block text-[10px] uppercase tracking-widest text-black/40 font-bold mb-1">Rainfall (mm)</label>
+                  <input type="number" id="input-rainfall" value="200" class="w-full bg-black/5 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500">
+                </div>
+              </div>
+              <button id="btn-predict-crop" class="px-6 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20">
+                Predict Best Crop
+              </button>
+              <div id="crop-result" class="mt-6 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 hidden">
+                <p class="text-xs text-emerald-600 font-bold uppercase tracking-widest mb-1">Recommended Crop</p>
+                <h5 id="crop-name" class="text-xl font-bold text-emerald-900">Rice</h5>
+              </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-black/5">
+              <h4 class="text-lg font-bold tracking-tight mb-6 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-lightning text-orange-500"><path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973"/><path d="m13 12-3 5h4l-3 5"/></svg>
+                Climate Risk ML
+              </h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-[10px] uppercase tracking-widest text-black/40 font-bold mb-1">Temp Anomaly</label>
+                  <input type="number" id="input-temp-anomaly" step="0.1" value="2.5" class="w-full bg-black/5 border-none rounded-xl px-4 py-2 text-sm">
+                </div>
+                <div>
+                  <label class="block text-[10px] uppercase tracking-widest text-black/40 font-bold mb-1">Pressure</label>
+                  <input type="number" id="input-pressure" value="980" class="w-full bg-black/5 border-none rounded-xl px-4 py-2 text-sm">
+                </div>
+                <button id="btn-predict-risk" class="w-full py-3 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition-all">
+                  Analyze Risk
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Weather -->
+        <section id="section-weather" class="content-section hidden">
+          <header class="mb-8">
+            <h2 class="text-3xl font-bold tracking-tight mb-1">Weather Forecast</h2>
+            <p class="text-black/40 text-sm">Real-time GPS-based weather data.</p>
+          </header>
+          <div id="weather-display" class="bg-white p-8 rounded-3xl shadow-sm border border-black/5">
+            <p class="text-black/20 font-mono">Sync GPS to load weather data...</p>
+          </div>
+        </section>
+
+        <!-- Section: Mandi -->
+        <section id="section-mandi" class="content-section hidden">
+          <header class="mb-8">
+            <h2 class="text-3xl font-bold tracking-tight mb-1">Mandi Prices</h2>
+            <p class="text-black/40 text-sm">Current market rates for your region.</p>
+          </header>
+          <div id="mandi-list" class="bg-white p-8 rounded-3xl shadow-sm border border-black/5 space-y-4">
+            <!-- Mandi prices will be rendered here -->
+          </div>
+        </section>
+
+        <!-- Section: Schemes -->
+        <section id="section-schemes" class="content-section hidden">
+          <header class="mb-8">
+            <h2 class="text-3xl font-bold tracking-tight mb-1">Government Schemes</h2>
+            <p class="text-black/40 text-sm">Relevant agricultural subsidies and support.</p>
+          </header>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-black/5">
+              <h5 class="font-bold mb-2">PM-Kisan Samman Nidhi</h5>
+              <p class="text-sm text-black/60">Income support of ₹6,000 per year in three installments.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-black/5">
+              <h5 class="font-bold mb-2">Pradhan Mantri Fasal Bima Yojana</h5>
+              <p class="text-sm text-black/60">Crop insurance against natural calamities.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Analytics -->
+        <section id="section-analytics" class="content-section hidden">
+          <header class="mb-8">
+            <h2 class="text-3xl font-bold tracking-tight mb-1">Analytics</h2>
+            <p class="text-black/40 text-sm">Deep insights into climate trends.</p>
+          </header>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-black/5">
+              <h4 class="text-lg font-bold tracking-tight mb-6">Climate Risk Forecasting</h4>
+              <div id="forecast-chart" class="w-full h-[300px] bg-black/5 rounded-2xl flex items-center justify-center overflow-hidden">
+                <p class="text-black/20 font-mono text-xs">INITIALIZING D3 ENGINE...</p>
+              </div>
+            </div>
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-black/5">
+              <h4 class="text-lg font-bold tracking-tight mb-6">Regional Risk Timeline</h4>
+              <div id="risk-timeline" class="space-y-6">
+                <!-- Timeline will be rendered here -->
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Gemini Chat Modal (Hidden) -->
+    <div id="gemini-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+      <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[600px]">
+        <div class="p-6 border-bottom border-black/5 flex justify-between items-center bg-[#151619] text-white">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain"><path d="M9.5 2A5 5 0 0 1 12 7v10a5 5 0 0 1-5-5 5 5 0 0 1 2.5-3.5"/><path d="M14.5 2A5 5 0 0 0 12 7v10a5 5 0 0 0 5-5 5 5 0 0 0-2.5-3.5"/></svg>
+            </div>
+            <div>
+              <h5 class="font-bold">CRACSE AI Assistant</h5>
+              <p class="text-[10px] text-white/40 uppercase tracking-widest">Powered by Gemini 1.5 Flash</p>
+            </div>
+          </div>
+          <button id="close-modal" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-[#f9f9f9]">
+          <div class="flex gap-3">
+            <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot text-emerald-600"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-black/5 text-sm max-w-[80%]">
+              Hello! I am your Climate Risk Adaptive Strategy Engine. How can I help you optimize your crop strategy today?
+            </div>
+          </div>
+        </div>
+        <div class="p-6 border-t border-black/5 bg-white">
+          <div class="flex gap-2">
+            <input type="text" id="chat-input" placeholder="Ask about crop varieties, irrigation, or weather risks..." class="flex-1 bg-black/5 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 transition-all">
+            <button id="send-chat" class="p-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Chat Trigger -->
+    <button id="ask-gemini" class="fixed bottom-8 right-8 w-14 h-14 bg-emerald-500 text-white rounded-full shadow-2xl shadow-emerald-500/40 flex items-center justify-center hover:scale-110 transition-all z-40">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </button>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/motion@10.16.2/dist/motion.js"></script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
